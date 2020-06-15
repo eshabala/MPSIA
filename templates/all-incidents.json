@@ -1,0 +1,39 @@
+{
+  "offset": 0,
+  "limit": 50,
+  "groups": {
+    "filterType": "no_filter"
+  },
+  "timeFrom": 1584845160,
+  "timeTo": null,
+  "filterTimeType": "creation",
+  "filter": {
+    "select": [
+      "key",
+      "name",
+      "category",
+      "type",
+      "status",
+      "created",
+      "assigned"
+    ],
+    "where": "status != \"Closed\"",
+    "orderby": [
+      {
+        "field": "created",
+        "sortOrder": "descending"
+      },
+      {
+        "field": "status",
+        "sortOrder": "ascending"
+      },
+      {
+        "field": "severity",
+        "sortOrder": "descending"
+      }
+    ]
+  },
+  "queryIds": [
+    "all_incidents"
+  ]
+}

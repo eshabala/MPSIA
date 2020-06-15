@@ -1,0 +1,873 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Инцидент {{inc['key']}}</title>
+
+    <style>
+        .invoice-box {
+            max-width: 900px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #09213E;
+			word-break: break-all; /* Перенос слов */
+        }
+        
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+			word-wrap: break-word; /* Перенос слов */ 
+        }
+        
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+        
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }
+        
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+        
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
+        }
+        
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+			min-width: 200px;
+        }
+        
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+			min-width: 300px
+        }
+        
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+        
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+        
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+        
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+        
+        
+        /** RTL **/
+        
+        .rtl {
+            direction: rtl;
+            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        }
+        
+        .rtl table {
+            text-align: right;
+        }
+        
+        .rtl table tr td:nth-child(2) {
+            text-align: left;
+        }
+		
+		.accordion {
+  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+  background-color: #eee;
+  color: #09213E;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  transition: 0.4s;
+  border: 1px solid #d0d0d0;
+}
+
+button.accordion:after {
+    content: '\002B';
+    color: #09213E;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+	
+}
+
+button.accordion.active:after {
+    content: "\2212";
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .accordion:hover {
+  background-color: #ccc;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+  border: 2px solid #eee;
+  background-color: white;
+  display: none;
+  overflow: hidden;
+}
+    </style>
+</head>
+
+<body>
+    <div class="invoice-box">
+        <center>
+            <h2>Карточка инцидента {{inc['key']}} в группе <br> <b style="color:black;">
+			
+			{% if inc_detail['groups'][0] is defined %}
+			
+			{{inc_detail['groups'][0]['name']}}
+			
+			{% else %}
+			
+			!!! Группа не присвоена !!!
+			
+			{% endif %}
+			
+			</b> <br> от {{inc_detail['created']}}
+			
+			</h2></center>
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <img src="../../templates/html/logo.png" style="width:100%; max-width:300px;">
+                            </td>
+
+                            <td>
+                                <b>Инцидент:</b> {{inc['key']}}
+                                <br>
+                                <b>Дата:</b> {{inc_detail['created']}}
+                                <br>
+                                <b>Категория:</b> {{inc['category']}}
+                                <br>
+                                <b>Тип:</b> {{inc['type']}}
+                                <br>
+                                <b>Критичность:</b> {{inc['severity']}}
+                                <br>
+                                <b>Статус инцидента:</b> {{inc['status']}}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tr>
+
+                            <td>
+                                <b>Имя инцидента:</b> {{inc['name']}}
+                                <br>
+                                <b>Расположение:</b> {% if inc_detail['groups'][0] is defined %}
+			
+			                                            {{inc_detail['groups'][0]['name']}}
+			
+			                                         {% else %}
+			
+			                                            !!! Группа не присвоена !!!
+			
+			                                         {% endif %}
+                                <br>
+                                <b>ID инцидента:</b> {{inc['id']}}
+                                <br>
+                                <b>Описание инцидента:</b> {{inc_detail["description"]}}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+			
+			</table>
+			
+			
+		<button class="accordion">Детали инцидента</button>
+        <div class="panel">
+		
+		<table cellpadding="0" cellspacing="0">
+
+            <tr class="heading">
+                <td>
+                    Правило корреляции
+                </td>
+
+                <td>
+                    {{inc_detail['correlationRuleName']}}
+                </td>
+            </tr>
+
+            <tr class="heading">
+                <td>
+                    Параметры
+                </td>
+
+                <td>
+
+                </td>
+            </tr>
+
+            {%for param in inc_detail['parameters']%}
+
+            <tr class="item">
+                <td>
+                    <b>{{param['id']}}</b>
+                </td>
+
+                <td>
+                    {{param['value']}}
+                </td>
+            </tr>
+
+            {%endfor%}
+
+            <tr class="heading">
+                <td>
+                    Атакующие
+                </td>
+
+                <td>
+				
+				{% if inc_detail['attackers']['assets'][0] is defined %}
+				{% for attackers in inc_detail['attackers']['assets'] %}
+				    {{ attackers['name'] }},
+				{% endfor %}
+				{% endif %}
+
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    <b>Адреса</b>
+                </td>
+
+                <td>
+                    {{inc_detail['attackers']['addresses']}}
+                </td>
+            </tr>
+            <tr class="item">
+                <td>
+                    <b>Активы</b>
+                </td>
+
+                <td>
+                    {{inc_detail['attackers']['assets']}}
+                </td>
+            </tr>
+            <tr class="item">
+                <td>
+                    <b>Группы</b>
+                </td>
+
+                <td>
+                    {{inc_detail['attackers']['groups']}}
+                </td>
+            </tr>
+            <tr class="item">
+                <td>
+                    <b>Сети</b>
+                </td>
+
+                <td>
+                    {{inc_detail['attackers']['networks']}}
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    <b>Иное</b>
+                </td>
+
+                <td>
+                    {{inc_detail['attackers']['others']}}
+                </td>
+            </tr>
+
+            <tr class="heading">
+                <td>
+                    Под атакой
+                </td>
+
+                <td>
+				{% if inc_detail['targets']['assets'][0] is defined %}
+				{% for targets in inc_detail['targets']['assets'] %}
+				    {{ targets['name'] }},
+				{% endfor %}
+				{% endif %}
+
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    <b>Адреса</b>
+                </td>
+
+                <td>
+                    {{inc_detail['targets']['addresses']}}
+                </td>
+            </tr>
+            <tr class="item">
+                <td>
+                    <b>Аактивы</b>
+                </td>
+
+                <td>
+                    {{inc_detail['targets']['assets']}}
+                </td>
+            </tr>
+            <tr class="item">
+                <td>
+                    <b>Группы</b>
+                </td>
+
+                <td>
+                    {{inc_detail['targets']['groups']}}
+                </td>
+            </tr>
+            <tr class="item">
+                <td>
+                    <b>Сети</b>
+                </td>
+
+                <td>
+                    {{inc_detail['targets']['networks']}}
+                </td>
+            </tr>
+			
+		</table>
+		</div>
+		
+		
+		<button class="accordion" id="all_events">Связанные события</button>
+        <div class="panel">
+		<table cellpadding="0" cellspacing="0">
+
+            {% for event in inc_events %}
+
+            <tr class="item">
+                <td>
+                    <a href="#{{event['id']}}">{{event['id']}}</a>
+                </td>
+
+                <td>
+                    {{event['description']}}
+                </td>
+            </tr>
+
+            {% endfor %} 
+			
+
+        </table>
+		
+		</div>
+		
+		{% for event_d in inc_events_detail['events'] %}
+		
+		<button id="{{event_d['_meta']['id']}}" class="accordion">Детали события: {{event_d['_meta']['id']}}  [<a href="#all_events">Все события</a>]</button>
+        <div class="panel">
+
+        <table cellpadding="0" cellspacing="0">
+
+            <tr class="heading">
+                <td>
+                    Общая информация
+                </td>
+
+                <td>
+                    
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    <b>ID</b>
+                </td>
+
+                <td>
+                    {{event_d['id']}}
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    <b>Время обнаружения</b>
+                </td>
+
+                <td>
+                    {{event_d['original_time']}}
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    <b>Время получения системой</b>
+                </td>
+
+                <td>
+                    {{event_d['recv_time']}}
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    <b>Описание</b>
+                </td>
+
+                <td>
+                    {{event_d['text']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>site_name</b>
+                </td>
+
+                <td>
+                    {{event_d['site_name']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>site_address</b>
+                </td>
+
+                <td>
+                    {{event_d['site_address']}}
+                </td>
+            </tr>
+			
+			<tr class="heading">
+                <td>
+                    Категория
+                </td>
+
+                <td>
+                    
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    <b>category.generic</b>
+                </td>
+
+                <td>
+                    {{event_d['category.generic']}}
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    <b>category.high</b>
+                </td>
+
+                <td>
+                    {{event_d['category.high']}}
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    <b>category.low</b>
+                </td>
+
+                <td>
+                    {{event_d['category.low']}}
+                </td>
+            </tr>
+
+            <tr class="heading">
+                <td>
+                    Адресаты (получатель)
+                </td>
+
+                <td>
+                    
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>dst.asset</b>
+                </td>
+
+                <td>
+                    {{event_d['dst.asset']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>dst.host</b>
+                </td>
+
+                <td>
+                    {{event_d['dst.host']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>dst.port</b>
+                </td>
+
+                <td>
+                    {{event_d['dst.port']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>dst.hostname</b>
+                </td>
+
+                <td>
+                    {{event_d['dst.hostname']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>dst.fqdn</b>
+                </td>
+
+                <td>
+                    {{event_d['dst.fqdn']}}
+                </td>
+            </tr>
+			
+			<tr class="heading">
+                <td>
+                    Роли во взаимодействии
+                </td>
+
+                <td>
+                    Субъект
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>subject</b>
+                </td>
+
+                <td>
+                    {{event_d['subject']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>subject.name</b>
+                </td>
+
+                <td>
+                    {{event_d['subject.name']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>subject.domain</b>
+                </td>
+
+                <td>
+                    {{event_d['subject.domain']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>subject.id</b>
+                </td>
+
+                <td>
+                    {{event_d['subject.id']}}
+                </td>
+            </tr>
+			
+			<tr class="heading">
+                <td>
+                    Роли во взаимодействии
+                </td>
+
+                <td>
+                    Объект
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>object</b>
+                </td>
+
+                <td>
+                    {{event_d['object']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>object.name</b>
+                </td>
+
+                <td>
+                    {{event_d['object.name']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>object.domain</b>
+                </td>
+
+                <td>
+                    {{event_d['object.domain']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>object.id</b>
+                </td>
+
+                <td>
+                    {{event_d['object.id']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>object.type</b>
+                </td>
+
+                <td>
+                    {{event_d['object.type']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>object.path</b>
+                </td>
+
+                <td>
+                    {{event_d['object.path']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>object.value</b>
+                </td>
+
+                <td>
+                    {{event_d['object.value']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>object.state</b>
+                </td>
+
+                <td>
+                    {{event_d['object.state']}}
+                </td>
+            </tr>
+			
+			
+			<tr class="heading">
+                <td>
+                   Параметры взаимодействия
+                </td>
+
+                <td>
+                  
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>importance</b>
+                </td>
+
+                <td>
+                    {{event_d['importance']}}
+                </td>
+            </tr>
+			
+			
+			<tr class="item">
+                <td>
+                    <b>logon_type</b>
+                </td>
+
+                <td>
+                    {{event_d['logon_type']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>action</b>
+                </td>
+
+                <td>
+                    {{event_d['action']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>status</b>
+                </td>
+
+                <td>
+                    {{event_d['status']}}
+                </td>
+            </tr>
+			
+			<tr class="heading">
+                <td>
+                   Источник событий
+                </td>
+
+                <td>
+                  
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>event_src.host</b>
+                </td>
+
+                <td>
+                    {{event_d['event_src.host']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>event_src.fqdn</b>
+                </td>
+
+                <td>
+                    {{event_d['event_src.fqdn']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>Title::Subys:Category</b>
+                </td>
+
+                <td>
+				    {% if inc['assigned']['lastName'] != None %}
+                    {{str(inc['assigned']['lastName'])+" "+str(inc['assigned']['firstName'])}}
+                    {% else %}
+					Нет
+					{% endif %}
+                    {{event_d['event_src.title']}} : {{event_d['event_src.subsys']}} : {{event_d['event_src.category']}}
+                </td>
+            </tr>
+			
+			<tr class="heading">
+                <td>
+                   Точка сбора
+                </td>
+
+                <td>
+                  
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>recv_asset</b>
+                </td>
+
+                <td>
+                    {{event_d['recv_asset']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>recv_ipv4</b>
+                </td>
+
+                <td>
+                    {{event_d['recv_ipv4']}}
+                </td>
+            </tr>
+			
+			<tr class="item">
+                <td>
+                    <b>recv_time</b>
+                </td>
+
+                <td>
+                    {{event_d['recv_time']}}
+                </td>
+            </tr>
+            
+        </table>
+		</div>
+		
+		{% endfor %}
+    </div>
+	
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+</script>
+</body>
+
+</html>
+</html>

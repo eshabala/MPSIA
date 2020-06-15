@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Инциденты MaxPatrol SIEM</title>
+
+    <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body>
+    <!-- partial:index.partial.html -->
+    <div id="demo">
+        <h1>Список всех открытых инцидентов MaxPatrol SIEM</h1>
+        <h2>Обновляется по мере возникновения (последнее обновление {{dblast_update_time}})</h2>
+
+        <!-- Responsive table starts here -->
+        <!-- For correct display on small screens you must add 'data-title' to each 'td' in your table -->
+        <div class="table-responsive-vertical shadow-z-1">
+            <!-- Table starts here -->
+            <table id="table" class="table table-hover table-mc-light-blue table-bordered">
+                <thead>
+                    <tr>
+                        <th>KEY</th>
+                        <th>ID</th>
+                        <th>ТИП</th>
+                        <th>СТАТУС</th>
+						<th>ИМЯ</th>
+						<th>ОТВЕТСТВЕННЫЙ</th>
+						<th>КАРТОЧКА</th>
+						<th>RAW JSON</th>
+                    </tr>
+                </thead>
+                <tbody>
+				    {%for incd in incidents%}
+                    <tr>
+                        <td data-title="KEY">{{incd[1]}}</td>
+						<td data-title="ID">{{incd[0]}}</td>
+                        <td data-title="TYPE">{{incd[2]}}</td>
+                        <td data-title="STATUS">{{incd[3]}}</td>
+						<td data-title="NAME">{{incd[4]}}</td>
+                        <td data-title="RESPONSER">
+                        
+			{% if incd[5] is defined %}
+                            {{incd[5]+" "+incd[6]}}
+                        {% else %}
+                            Не назначен
+                        {% endif %}
+
+                        </td>
+						<td data-title="Link">
+                            <a href="../incidents/{{incd[0]}}/report.html" target="_blank">Карточка</a>
+                        </td>
+						<td data-title="Link">
+                            <a href="../incidents/{{incd[0]}}/" target="_blank">Raw JSON</a>
+                        </td>
+                    </tr>
+					{%endfor%}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Table Constructor change table classes, you don't need it in your project -->
+        <div style="width: 50%; display: inline-block; vertical-align: top">
+		    <h2>Инциденты</h2>
+			<p>Для каждого инциднта создается карточка, в которой описывается большинство данных об инциденте в терминалогии MaxPatrol SIEM.</p>
+			<p>Если представленных данных не достаточно, можно получить доступ к сырым json. Ссылка на json всегда содержится в крайней правой колонке.</p>
+
+        </div>
+        <div style="width: 45%; display: inline-block; vertical-align: top; margin-left: 30px;">
+            <h2>Помощь</h2>
+            <p>Список инцидентов пополняется с помощью python скрипта автоматически каждые 5 минут (по умолчанию).</p>
+            <p>Настроить частоту обновления можно с помощью редактирования cron задачи для скрипта MPSNewIncidentAlert.py.</p>
+        </div>
+    </div>
+    <!-- partial -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src="./script.js"></script>
+
+</body>
+
+</html>
