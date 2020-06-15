@@ -285,14 +285,4 @@ class MPSNewIncidentAlert: # работоспособность проверял
             event_time = self.normaltime(time.time()) # текущее время в нормальном представлении
             logfile.write("["+event_time+"] "+log_error_list[state[0]]+": "+state[1:]+"\n") # заись в файл
             logfile.close()
-                    
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+        
