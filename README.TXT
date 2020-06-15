@@ -9,7 +9,7 @@ Alert boot проходит авторизацию без помощи api, ис
 Системные требования:
 
 - python3 (pdfkit, bs4, codecs, jinja2, requests, urllib3)
-- nginx/apache2 *(при использовании для удаленного мониторинга по расписанию)
+- nginx/apache2
 - wkhtmltopdf
 
 Структура проекта:
